@@ -4,32 +4,33 @@ import time
 import os
 from utils import get_info_atms
 
-users = {} ##Store the command and location by user
 
-def list_atms(bot, update):
+def list_atms(bot, update, chat_data):
 
-	#Store user info
-	users[update.message.chat_id] = {'command': update.message.text, 'location':{}}
-
+	chat_id = update.message.chat_id
+	chat_data[chat_id] = {'command': update.message.text, 'location':{}}
 	reply_markup = telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton('Enviar Ubicación', request_location=True)]])
+	bot.sendMessage(chat_id, 'Por favor, envie su ubicación', reply_markup=reply_markup)
 
-	bot.sendMessage(update.message.chat_id, 'Por favor, envie su ubicación', reply_markup=reply_markup)
 
-def proc_location(bot, update):
+
+def proc_location(bot, update, chat_data):
 
 	chat_id = update.message.chat_id	
 
-	# retrieve user info
-	data = users[chat_id]
+	data = chat_data[chat_id]
 	data['location'] = update.message.location
 
 	bot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
 	msg, img = get_info_atms(data)
 
-	if len(msg) > 0:
+	if len(msg):
 		bot.sendMessage(chat_id, msg)
-		bot.send_photo(chat_id, photo=img)
+		try:
+			bot.send_photo(chat_id, photo=img)
+		except Exception:
+			bot.sendMessage(chat_id, "No se pudo cargar imagen con ubicación de los cajeros")
 	else:
 		bot.sendMessage(chat_id, "No hay cajeros automáticos cercanos")
 
@@ -40,14 +41,11 @@ def main():
 
 	updater = Updater(os.environ['API_KEY_TELEGRAM'])
 
-	updater.dispatcher.add_handler(CommandHandler(['banelco', 'link'], list_atms))
-	#updater.dispatcher.add_handler(CommandHandler('link', list_link_atms))
-	updater.dispatcher.add_handler(MessageHandler(Filters.location, proc_location))
-
+	updater.dispatcher.add_handler(CommandHandler(['banelco', 'link'], list_atms, pass_chat_data=True))
+	updater.dispatcher.add_handler(MessageHandler(Filters.location, proc_location, pass_chat_data=True))
 
 	updater.start_polling()
 	updater.idle()
-
 
 
 if __name__ == '__main__':

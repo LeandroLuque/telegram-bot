@@ -1,11 +1,13 @@
+import os
+
 import atms
 
 
 def encoding_static_gmap_url(data, atms):
 	"""
-		Encode the url google map with locations
+		Encode the gmap url with locations
 	"""
-	base_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=15&scale=1&size=600x300&maptype=roadmap&format=png&visual_refresh=true".\
+	base_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=15&scale=1&size=600x600&maptype=roadmap&format=png&visual_refresh=true".\
 					format(data["location"]["latitude"], data["location"]["longitude"])
 
 
