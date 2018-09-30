@@ -1,20 +1,35 @@
-from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
-import telegram
-import time
 import os
-from utils import get_info_atms
+import time
+import signal
 
+from apscheduler.schedulers.background import BackgroundScheduler
+import telegram
+from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
+
+from utils import get_info_atms
+from atms import reload_atms
+
+sched = BackgroundScheduler()
+
+@sched.scheduled_job('cron', day_of_week='mon-fri', hour=8)
+def scheduled_job():
+    reload_atms()
 
 def list_atms(bot, update, chat_data):
+	"""
+		Manejador para el comando /banelco o /link
+	"""
 
 	chat_id = update.message.chat_id
 	chat_data[chat_id] = {'command': update.message.text, 'location':{}}
 	reply_markup = telegram.ReplyKeyboardMarkup([[telegram.KeyboardButton('Enviar Ubicación', request_location=True)]])
 	bot.sendMessage(chat_id, 'Por favor, envie su ubicación', reply_markup=reply_markup)
 
-
-
 def proc_location(bot, update, chat_data):
+	"""
+		Manejador para los comandos que reciben
+		localizaciones
+	"""
 
 	chat_id = update.message.chat_id	
 
@@ -43,6 +58,8 @@ def main():
 
 	updater.dispatcher.add_handler(CommandHandler(['banelco', 'link'], list_atms, pass_chat_data=True))
 	updater.dispatcher.add_handler(MessageHandler(Filters.location, proc_location, pass_chat_data=True))
+
+	sched.start()
 
 	updater.start_polling()
 	updater.idle()

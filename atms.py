@@ -2,6 +2,24 @@ import numpy as np
 from pymongo import MongoClient
 
 
+def reload_atms():
+	"""
+		Recarga los cajeros que están po debajo
+		su nivel de extracciones.
+	"""
+
+	db = MongoClient().atmdb7
+
+	db.atmscaba.update_many(
+	    {"extractions": {
+	    	"$lt": 5	
+	    }},
+	    { "$set":
+	      {
+	        "extractions": 5
+	      }
+	   }
+	)
 
 def extract_money(db, atms):
 	"""
