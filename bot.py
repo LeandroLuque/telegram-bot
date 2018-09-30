@@ -1,6 +1,7 @@
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
 import telegram
 import time
+import os
 from utils import get_info_atms
 
 users = {} ##Store the command and location by user
@@ -37,7 +38,7 @@ def proc_location(bot, update):
 
 def main():
 
-	updater = Updater('628247201:AAHLl7H5as7NTuRJXv5NcRmMx8FrWOZAkIk')
+	updater = Updater(os.environ['API_KEY_TELEGRAM'])
 
 	updater.dispatcher.add_handler(CommandHandler(['banelco', 'link'], list_atms))
 	#updater.dispatcher.add_handler(CommandHandler('link', list_link_atms))
