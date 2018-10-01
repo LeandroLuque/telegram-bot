@@ -8,7 +8,7 @@ def reload_atms():
 		su nivel de extracciones.
 	"""
 
-	db = MongoClient().atmdb7
+	db = MongoClient('mongo', 27017).atmdb7
 
 	db.atmscaba.update_many(
 	    {"extractions": {
@@ -54,8 +54,10 @@ def get_atms(data):
 	lng = data['location']['longitude']
 	lat = data['location']['latitude']
 
+	print("aca estoy")
+
 	#TODO: move this to a different module
-	db = MongoClient().atmdb7
+	db = MongoClient("localhost", 27017).atmdb7
 	
 	## this query returns the nearest points
 	query = {

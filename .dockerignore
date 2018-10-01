@@ -1,0 +1,8 @@
+.venv/
+.git/
+__pycache__/
+
+
+.gitignore
+docker-compose.yml
+variables.env

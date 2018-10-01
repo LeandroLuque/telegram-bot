@@ -1,10 +1,9 @@
 import os
-import time
-import signal
+import datetime
 
-from apscheduler.schedulers.background import BackgroundScheduler
 import telegram
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from utils import get_info_atms
 from atms import reload_atms

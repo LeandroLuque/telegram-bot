@@ -19,6 +19,10 @@ def encoding_static_gmap_url(data, atms):
 	base_url += "&markers=size:mid%7Ccolor:0x0005ff%7Clabel:A%7C{},{}".\
 				format(data["location"]["latitude"], data["location"]["longitude"])
 
+	base_url += "&key={}".format(os.environ['API_KEY_GMAP'])
+
+	print(base_url)
+
 	return base_url
 
 
