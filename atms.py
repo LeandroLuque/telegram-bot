@@ -4,7 +4,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 
 class ATMManager(object):
-	"""docstring for chat"""
+	"""
+		Maneja las operaciones vinculadas a cajeros como:
+		busqueda, extraccion y recarga.
+	"""
+	
 	def __init__(self, host="localhost", port=27017):
 		super(ATMManager, self).__init__()
 		self.host = host
@@ -68,8 +72,8 @@ class ATMManager(object):
 		:return: Pymongo cursor con resultados, ordenados por cercania
 				a la posición enviada.
 		"""
-
-		network = data['command'][1:].upper()
+		
+		network = data['command'].upper()
 		lng = data['location']['longitude']
 		lat = data['location']['latitude']
 		
@@ -83,7 +87,7 @@ class ATMManager(object):
 	  					"$nearSphere": {
 	     					"$geometry": {
 	        					"type" : "Point",
-	        					"coordinates" : [-58.429863,-34.593244]#[lng, lat]
+	        					"coordinates" : [lng, lat]
 	     					},
 	     				"$minDistance": 1,
 	     				"$maxDistance": 500

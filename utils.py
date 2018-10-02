@@ -5,6 +5,10 @@ def encoding_static_gmap_url(data, atms):
 		Genera la URL necesaria para que se muestra el mapa
 		como una imagen del mapa de Google, con los marlkers de
 		la posicion del usuario (azul) y los cajeros cercanos (rojo)
+	:param data: Dict con los datos del usuario
+	:param atms: Array con las coordenadas de los cajeros. Ejemplo:
+					[[<latitude>, <longitude>], ....]
+	:return: URL de un Google Static Map
 	"""
 	base_url = "https://maps.googleapis.com/maps/api/staticmap?center={},{}&zoom=15&scale=1&size=600x600&maptype=roadmap&format=png&visual_refresh=true".\
 					format(data["location"]["latitude"], data["location"]["longitude"])
@@ -25,9 +29,10 @@ def encoding_static_gmap_url(data, atms):
 
 def format_info_atms(data, atms):
 	"""
-		Genera el output necesario para la consulta
-		del cliente
-	:param atms: Query
+		Genera el output necesario para visualizar la
+		consulta del usuario.
+	:param data: Dict con los datos del usuario.
+	:param atms: Pymongo Cursor
 	:return: Tupla con output en forma de texto con la descripcion 
 			de los cajeros y la URL del mapa
 	"""

@@ -1,7 +1,8 @@
 import os
+import re
 
 import telegram
-from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
+from telegram.ext import Updater, CommandHandler, Filters, MessageHandler, RegexHandler
 
 import atms
 from utils import format_info_atms
@@ -54,7 +55,9 @@ def main():
 
 	updater = Updater(os.environ['API_KEY_TELEGRAM'])
 
-	updater.dispatcher.add_handler(CommandHandler(['banelco', 'link'], list_atms, pass_chat_data=True))
+	re_command = re.compile('banelco|link', re.IGNORECASE)
+
+	updater.dispatcher.add_handler(RegexHandler(re_command, list_atms, pass_chat_data=True))
 	updater.dispatcher.add_handler(MessageHandler(Filters.location, proc_location, pass_chat_data=True))
 
 	updater.start_polling()
