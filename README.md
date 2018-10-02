@@ -3,9 +3,9 @@
 Uso
 =====
 
-* Editar el archivo variables.env con los valores para los tokens de TELEGRAM y GOOGLE STATIC MAPS.
+* Editar el archivo variables.env con los valores para los tokens de **TELEGRAM** y **GOOGLE STATIC MAPS**.
 
-* Ejecutar docker-compose up --build
+* Ejecutar `docker-compose up`
 
 
 Conflictos

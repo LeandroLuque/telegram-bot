@@ -19,4 +19,4 @@ services:
     restart: always
     container_name: mongo_jampp
     volumes:
-      - /cmongo:/data/db
+      - ./data/db:/data/db

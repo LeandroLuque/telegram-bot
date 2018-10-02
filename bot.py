@@ -1,18 +1,16 @@
 import os
-import datetime
 
 import telegram
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler
-from apscheduler.schedulers.background import BackgroundScheduler
 
-from utils import get_info_atms
-from atms import reload_atms
+import atms
+from utils import format_info_atms
+from initialize_db import init_db
 
-sched = BackgroundScheduler()
 
-@sched.scheduled_job('cron', day_of_week='mon-fri', hour=8)
-def scheduled_job():
-    reload_atms()
+atm_manager = atms.ATMManager("mongo")
+atm_manager.launch_bg_process()
+
 
 def list_atms(bot, update, chat_data):
 	"""
@@ -37,7 +35,8 @@ def proc_location(bot, update, chat_data):
 
 	bot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
-	msg, img = get_info_atms(data)
+	result_atms = atm_manager.get_atms(data)
+	msg, img = format_info_atms(data,result_atms)
 
 	if len(msg):
 		bot.sendMessage(chat_id, msg)
@@ -58,11 +57,12 @@ def main():
 	updater.dispatcher.add_handler(CommandHandler(['banelco', 'link'], list_atms, pass_chat_data=True))
 	updater.dispatcher.add_handler(MessageHandler(Filters.location, proc_location, pass_chat_data=True))
 
-	sched.start()
-
 	updater.start_polling()
 	updater.idle()
 
 
 if __name__ == '__main__':
+
+	init_db()
+
 	main()
